@@ -19,3 +19,14 @@ class UserOut(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str = "bearer"
+
+class ReferralCodeOut(BaseModel):
+    referral_code: str
+
+
+class ApplyReferralRequest(BaseModel):
+    referral_code: str
+
+
+class ApplyReferralResponse(BaseModel):
+    message: str    
