@@ -9,7 +9,9 @@ import jwt
 from app.database import get_db
 from app.models import User
 from app.schemas import UserCreate, Token
+from dotenv import load_dotenv
 
+load_dotenv()  # ensures .env is loaded no matter the import order
 router = APIRouter(prefix="/api/auth", tags=["Auth"])
 
 SECRET_KEY = os.getenv("SECRET_KEY", "fallback-secret-change-me")
