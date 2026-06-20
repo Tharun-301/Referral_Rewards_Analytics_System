@@ -1,6 +1,6 @@
 from sqlalchemy import func
 from sqlalchemy.orm import Session
-
+from fastapi import HTTPException, status
 from app.models import RewardConfig, RewardLedger, Referral, User
 
 
@@ -79,3 +79,19 @@ def get_reward_history(db: Session, user: User) -> list[RewardLedger]:
         .order_by(RewardLedger.created_at.desc())
         .all()
     )
+
+def credit_reward(db: Session, reward_id: int) -> RewardLedger:
+    reward = db.query(RewardLedger).filter(RewardLedger.id == reward_id).first()
+    if not reward:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Reward not found")
+
+    if reward.status != "PENDING":
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Cannot credit a reward with status {reward.status}",
+        )
+
+    reward.status = "CREDITED"
+    db.commit()
+    db.refresh(reward)
+    return reward

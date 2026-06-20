@@ -67,3 +67,21 @@ class RewardHistoryItem(BaseModel):
 
     class Config:
         from_attributes = True
+
+class TopReferrerItem(BaseModel):
+    user_id: str
+    successful_referrals: int
+
+
+class RewardOut(BaseModel):
+    id: int
+    user_id: str
+    referral_id: int
+    reward_type: str
+    reward_value: int
+    reward_unit: str
+    status: str
+    created_at: datetime
+
+    class Config:
+        from_attributes = True     

@@ -139,3 +139,17 @@ def get_referral_timeline(db: Session, user: User) -> list[dict]:
         .all()
     )
     return [{"date": str(r.date), "count": r.count} for r in rows]
+
+def get_top_referrers(db: Session, limit: int = 10) -> list[dict]:
+    rows = (
+        db.query(
+            Referral.referred_by.label("user_id"),
+            func.count(Referral.id).label("successful_referrals"),
+        )
+        .filter(Referral.referral_code_used.isnot(None))
+        .group_by(Referral.referred_by)
+        .order_by(func.count(Referral.id).desc())
+        .limit(limit)
+        .all()
+    )
+    return [{"user_id": r.user_id, "successful_referrals": r.successful_referrals} for r in rows]
